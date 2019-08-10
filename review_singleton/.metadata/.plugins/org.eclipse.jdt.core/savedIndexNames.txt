@@ -1,0 +1,2 @@
+INDEX VERSION 1.131+C:\0.encore\01.java\review_mvc\.metadata\.plugins\org.eclipse.jdt.core
+1094008919.index
