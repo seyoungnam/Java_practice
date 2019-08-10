@@ -3,4 +3,5 @@ All contents uploaded here are based on what I have learned since July 2019.
 
 * Contents
   * review_mvc - applied mvc-pattern basics, CRUD functions
+  * review_singleton - applied singleton pattern in review_mvc
 
