@@ -1,2 +1,6 @@
 # Java_practice
-Java projects made for the practice purpose
+All contents uploaded here are based on what I have learned since July 2019.
+
+* Contents
+  * review_mvc - applied mvc-pattern basics, 
+
