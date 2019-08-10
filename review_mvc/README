@@ -1,0 +1,47 @@
+1. MVC 패턴이란?
+	- Model, View, Controller의 약자, application의 역할에 따른 구성 패턴
+	- client의 request는 controller에 전달되고, controller는 model(DB)에서 결과값을 가져와 client에 response 해줌 
+	
+2. Model
+	- client가 원하는 모든 데이터를 보유
+	- 규칙
+		- view나 controller에 대해 어떤 정보도 알면 안된다
+		- 보유 데이터 정보 변경시, 변경 통지에 대한 처리방법을 구현해야 한다
+		- 규칙재사용 가능해야 하며 다른 인터페이스에서도 변하지 않아야 한다
+3. View
+	- input text, checkbox 등 client interface의 구성요소
+	- object의 input, output 담당
+	- client가 data를 볼 수 있는 화면
+	- 규칙
+		- model이 가지고 있는 정보를 따로 저장해서는 안된다
+		- model이나 controller와 같이 다른 구성 요소들을 몰라야 한다
+		  (즉, 데이터를 받으면 화면에 표시해주는 역할만 가짐)
+		- 변경이 일어나면 변경 통지에 대한 처리방법을 구현해야 한다
+	
+4. Controller
+	- data와 client interface를 잇는 다리 역할
+	- client가 요청한 event들을 처리
+	- 규칙
+		- model이나 view에 대해 알고 있어야 한다
+		- model이나 view의 변경을 모니터링 해야 한다
+
+5. MVC 패턴 사용 이유
+	- 제조공장에서는 원료투입-가공-포장 등 기능별로 역할이 나눠져 있으며, 사람별로 하나의 역할만 담당하여 효율을 극대화 한다
+	- 제조공장처럼 애플리케이션을 client과 보는 page, data process, 그리고 이 두가지를 중간에서 제어하는 controller로 구성하면 각자의 역할에 집중할 수 있을 뿐만 아니라,
+	    유지보수, 애플리케이션의 확장, 중복코딩 방지에도 유리하다
+
+6. 각 package와 class별 역할 설명
+	- view
+		- StartView : client가 browser에서 보내는 request가 모여 있으며, request별 Controller 명령문 존재 
+		- EndView : client의 request에 대한 response 로직(메소드)이 구현되어 있음
+	- controller
+		- ClientController : StartView에서 받아온 request를 DB와 연동하여 처리 후 response를 EndView로 보내는 역할(서버 역할)
+	- model
+		- ClientModel : DB가 포함되어 있는 DB system으로 DB를 조작할 수 있는 로직이 내재되어 있음
+						request를 받은 ClientController는 ClientModel의 메소드를 불러 response 값을 가져옴
+	- model.domain
+		- ClientDTO : DB값을 불러오거나(get) 수정할 수 있는(set) 메소드 존재 
+
+*참고 사이트
+https://m.blog.naver.com/jhc9639/220967034588
+
