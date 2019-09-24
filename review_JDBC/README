@@ -1,0 +1,95 @@
+1. review_JDBC의 목표
+	- review_sigleton에 JDBC를 적용하여 OracleDB와 소통하는 시스템 제작
+
+2. 시스템 작동 흐름
+	- start view에서 input 입력 -> controller -> service( -> DAO -> DB)에서 로직 수행 후 필요한 값 얻어 end view에 출력
+	
+3. 각 package 단계별 역할
+	- start view : 사용자의 input값을 controller의 method으로 전달
+	- controller
+		- start view로부터 넘어온 명령을 service의 method로 전달,
+		- service의 method가 받아온 결과 객체가 null이 아닐 경우, EndView의 정상 method 호출하여 결과값 출력
+		- service의 method가 받아온 결과 객체가 null일 경우, EndView의 error method 호출
+	- service
+		- controller로부터 넘어온 명령을 DAO의 method로 전달
+		- DAO method 가동시 SQL이 가동되므로 SQLException 처리를 위해 try&catch 사용
+		- DAO의 method가 정상 작동할 경우(결과 객체가 null인지 아닌지는 거르지 않음), return 결과 객체
+		- 비정상 작동시 catch문에 걸리도록 설계
+	- DAO
+		- service에서 넘어온 명령을 DB에 직접 SQL문을 입력하여 처리
+		- DB와의 연동은 DBUtil.getConnection()을 통해 구현
+		- return값 반환 전 finally{DBUtil.close(...);}을 통해 자원 반환
+
+4. 각 package별 method의 대략적인 구성
+	- controller method
+		- service를 통해 return 받는 객체
+		- if(객체 != 0) {endview를 통해 결과값 표시}
+		- else {endview를 통해 error메세지 띄우기}
+
+	- service method
+		- DAO를 통해 return받는 객체
+		- try{객체 = DAO.method()}
+		- catch(SQLException s) {s.printStackTrace()}
+		- return 객체 
+
+	- DAO method
+		- return값이 있는 경우(select문)
+			- Connection/PreparedStatement/ResultSet/ArrayList<DTO> 등 필요한 field
+			- try{SQL 쿼리문 실행을 통해 나온 결과값을 객체에 담는 작업}
+			- finally{DBUtil.close(con, pstmt, rset);}
+			- return 객체
+		- return값이 없는 경우(insert/update/delete)
+			- Connection/PreparedStatement 등 필요한 field
+			- try{SQL 쿼리문 실행을 통해 나온 결과값이 1이면 return true}
+			- finally{DBUtil.close(con, pstmt, rset);}
+			- return false;
+
+5. JDBC란?
+	- Java DataBase Connectivity
+	- DB 종류에 종속적이지 않은 DB연동 표준 API
+	- DB 연동을 위한 기본 필요 정보는
+		1. 어떤 DB인지
+		2. DB의 IP
+		3. DB의 id/pw
+		4. DB연동 driver
+			C:\oraclexe\app\oracle\product\11.2.0\server\jdbc\lib\ojdbc6.jar
+
+6. JDBC 프로그래밍 코딩 흐름
+	1) JDBC 드라이버 로드 			- static{}
+	2) DB 접속(IP/ID/PW)			- Connection
+	3) DB 데이터 CRUD를 위한 객체 생성	- Statement / PreparedStatement
+	4) DB 데이터 CRUD 실행			- ResultSet executeQuery(String query)
+								- int executeUpdate(String dml)
+	5) CRUD 결과값 반영 및 출력		- select인 경우 ResultSet 객체 분해
+								- insert인 경우 숫자값으로 확인
+	6) DB 접속 종료, 자원반환			- finally{} 필수
+
+7. JDBC 문법
+	- DB 연결
+		Connection conn = null;
+		try{
+			String jdbcDriver = "jdbc:oracle:thin:@127.0.0.1:1521:xe";
+			String id = "SCOTT";
+			String pw = "TIGER";
+			
+			conn = DriverManager.getConnection(jdbcDriver, id, pw);
+		}catch(SQLException ex){
+			//에러발생
+		}finally{
+			if(conn != null){
+				try{
+					conn.close();
+				}catch(SQLException ex){
+				
+				}
+			}
+		}
+	
+8. JDBC 사용시 주의점
+	- DB class에 DAO(Data Access Object) 필요
+
+
+*참고 사이트
+ * https://dyjung.tistory.com/50
+
+
